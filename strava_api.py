@@ -26,9 +26,9 @@ class StravaAPI:
         access_token = res.json()['access_token']
         return access_token
         
-    def get_dataset(self):
+    def get_dataset(self, page_num = 1):
         header = {'Authorization': 'Bearer ' + self.access_token}
-        param = {'per_page': 200, 'page': 1}
+        param = {'per_page': 200, 'page': page_num}
         my_dataset = requests.get(self.activites_url, headers=header, params=param).json()
         return my_dataset
         
