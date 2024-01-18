@@ -72,7 +72,7 @@ class WrangleData:
         self.data['Hour'] = self.data['Date'].dt.hour
         self.data['Minute'] = self.data['Date'].dt.minute  # splitting the minute and hour might confuse the ML model. That's a question for Dr. Al-Khassaweneh
         self.data['Weekday'] = self.data['Date'].dt.weekday
-        self.data['Calendar Date'] = self.data['Date'].dt.date
+        self.data['Calendar Date'] = self.data['Date'].dt.date.astype(str).str.strip()
 
 
     
