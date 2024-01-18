@@ -9,8 +9,10 @@ class GarminDataManager:
 
 class CleanData:
     # Implement data cleaning logic 
+
+    # specifying the columns that run into this issue won't work, but it varies by who the athlete is
     comma_cols = ['Calories','Total Ascent','Total Descent', 'Min Elevation', 'Max Elevation']
-    dashed_cols = ['Total Ascent', 'Total Descent', 'Min Elevation',  'Max Elevation','Avg Pace', 'Best Pace']
+    dashed_cols = ['Total Ascent', 'Total Descent', 'Min Elevation',  'Max Elevation','Avg Pace', 'Best Pace', 'Calories']
     
     def __init__(self, data, activity_types = ['Running']):
     # Call the constructor
@@ -22,11 +24,13 @@ class CleanData:
         # convert columns to datetime
         self.data['Date'] = pd.to_datetime(self.data['Date'])
         # remove '--' from columns that have it (run before cleaning others)
-        for col in self.dashed_cols:
+        for col in self.data:
         # print(dash_col)
             self.data[col] = self.data[col].replace('--','0') 
         for col in self.comma_cols:
-            self.data[col] = self.data[col].apply(lambda x: int(re.sub(',', '', x))) 
+            #print(col)
+            self.data[col] = self.data[col].apply(lambda x: int(re.sub(',', '', x)))
+            
         # reset index
         self.data = self.data.reset_index(drop = True)
         
@@ -68,6 +72,8 @@ class WrangleData:
         self.data['Hour'] = self.data['Date'].dt.hour
         self.data['Minute'] = self.data['Date'].dt.minute  # splitting the minute and hour might confuse the ML model. That's a question for Dr. Al-Khassaweneh
         self.data['Weekday'] = self.data['Date'].dt.weekday
+        self.data['Calendar Date'] = self.data['Date'].dt.date
+
 
     
     def split_time(self,x):
