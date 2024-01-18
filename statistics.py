@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-class SimpleStatistics:
+class Statistics:
     # write so that this works on the strava and garmin data
     def __init__(self,data):
         self.data = data
@@ -38,5 +38,14 @@ class SimpleStatistics:
 
     def get_kurtosis_vals(self):
         return self.numeric_data.kurtosis()
-        
+
+    def get_correlation(self, method = 'pearson'):
+        return self.numeric_data.corr(method)
+
+    def get_autocorrelation(self, lag = 1):
+        # how much is the series related to its shifted self
+        auto = {}
+        for col in self.numeric_data:
+           auto[col] = self.numeric_data[col].autocorr(lag)
+        return auto
     # return the average of all the numeric values
