@@ -27,6 +27,9 @@ class CleanData:
             self.data[col] = self.data[col].replace('--','0') 
         for col in self.comma_cols:
             self.data[col] = self.data[col].apply(lambda x: int(re.sub(',', '', x))) 
+        # reset index
+        self.data = self.data.reset_index(drop = True)
+        
             
     # I don't think we are going to need these function, but let's keep them for now  
     def drop_rows_with_missing_values(self):
