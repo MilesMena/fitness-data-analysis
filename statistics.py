@@ -6,8 +6,12 @@ class Statistics:
     def __init__(self,data):
         self.data = data
         self.numeric_data = self.data.select_dtypes(include = np.number)
+        
         self.describe = self.numeric_data.describe()
-
+        
+    def get_numeric(self):
+        return self.numeric_data
+        
     def get_summary_stats(self):
         return self.describe
         
