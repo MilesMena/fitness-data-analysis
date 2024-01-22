@@ -95,4 +95,25 @@ class WrangleData:
 
     # convert seconds columns to time
     # feature engineering
+
+class MergeData:
+    def __init__(self, strava, garmin):
+        self.strava = strava
+        self.garmin = garmin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
         
