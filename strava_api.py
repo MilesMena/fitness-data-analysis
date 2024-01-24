@@ -13,7 +13,7 @@ class StravaAPI:
         self.access_token = self.request_token()
 
     def request_token(self):
-        print("Requesting Token...\n")
+        print("Requesting Fresh Strava API Token...\n")
         # we pull our api info from config.py
         payload = {
             'client_id': config.client_id,
