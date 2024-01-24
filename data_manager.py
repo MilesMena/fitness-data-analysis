@@ -1,7 +1,10 @@
 import pandas as pd
 import re
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+#from sklearn.preprocessing import StandardScaler
 
-class GarminDataManager:
+class DataManager:
     # Implement reading in multiple files from the directory
     def __init__(self, data):
         self.data = data
@@ -101,6 +104,32 @@ class MergeData:
         self.strava = strava
         self.garmin = garmin
 
+
+class ClusterData:
+    def __init__(self, scaler_name, scaler, cluster_name, cluster_method):
+        self.scaler_name = scaler_name
+        self.scaler = scaler
+        self.cluster_name = cluster_name
+        self.cluster_method = cluster_method
+
+    def get_cluster_lables(self, data):
+        labels = []
+        
+        clustering_models = [
+            (self.scaler_name, self.scaler),
+            (self.cluster_name, self.cluster_method ) # init this before passing it to ClusterData DBSCAN(eps = pos_elbow, min_samples=2*df.shape[1])
+               ]
+    
+        # Combine preprocessing steps and clustering models into a pipeline
+        pipeline = Pipeline(clustering_models) #steps=[('preprocess', preprocessing_steps), ('cluster', clustering_models)])
+        
+        # Fit the pipeline to your data
+        pipeline.fit(data)
+        
+        # Access the clustering results
+        return pipeline.named_steps[self.cluster_name].labels_
+
+    
 
 
 
