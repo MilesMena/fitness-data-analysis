@@ -114,4 +114,29 @@ def scatter_plot_kudos_factors(data):
     return link 
 
 
+def scatter_3d_plot_cluster(df, cluster_cols, kneedles = None):
+
+    fig = px.scatter_3d(df, x = cluster_cols[0],  y = cluster_cols[1],  z = cluster_cols[2], color = 'Clusters of %.2f'%kneedles[-1] )
+    
+    # Slider for updating color
+    color_sliders = []
+    for knee in kneedles[::-1]:
+        column = 'Clusters of %.2f'%knee
+        slider = dict(label=column,method="update",args=[{'marker.color': [df[column]], 'coloraxis.colorscale': 'Viridis'},
+                                                    {'coloraxis': {'cmin': df[column].min(), 'cmax': df[column].max(),'colorbar': {'title': {'text': column}}}}])
+        color_sliders.append(slider)
+        
+    
+    fig.update_layout(yaxis={'title': None, 'showticklabels': True}, margin=dict(l=0, r=0, t=40, b=0),width = 800, height=400,
+                title=dict(text="Clusterting Similar Runs with DBSCAN", x=0.55, y=0.95, xanchor="center", yanchor="top"),
+                     updatemenus= [ 
+                dict(type = 'dropdown', x = -.15, y = .98, buttons= color_sliders,showactive = True)], 
+                     annotations=[
+                dict(text=" Epsilon (Clustering Difference Value):",showarrow=False,x=-.40,y=.99,xref="paper",yref="paper",xanchor="left",yanchor="bottom",font=dict(size=14))],
+                     )
+    
+    link = py.plot(fig, filename = 'scatter-3d-plot-clusters', auto_open=False)
+
+    return link
+
 
