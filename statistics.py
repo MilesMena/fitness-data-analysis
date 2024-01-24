@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import StandardScaler
+from kneed import KneeLocator
 
 class Statistics:
     # write so that this works on the strava and garmin data
@@ -52,4 +55,42 @@ class Statistics:
         for col in self.numeric_data:
            auto[col] = self.numeric_data[col].autocorr(lag)
         return auto
-    # return the average of all the numeric values
+
+    
+    def get_kneedles(self, cluster_cols, activity_type = 'Run', plot = False ):
+        # filter the data
+        df = self.data[self.data['sport_type'] == activity_type][cluster_cols].fillna(0)
+        
+
+        # scale the data 
+        df_scaled= StandardScaler().fit_transform(df)
+
+        # get k nearest neighbors
+        neighbors = NearestNeighbors(n_neighbors=2* df.shape[1]) #minPts recommended to be 2 * dim
+        neighbors_fit = neighbors.fit(df_scaled)
+        neigh_dist, neigh_ind  = neighbors_fit.kneighbors(df_scaled)
+
+        # sort the neighbor distances (lengths to points) in ascending order
+        # axis = 0 represents sort along first axis i.e. sort along row
+        sort_neigh_dist = np.sort(neigh_dist, axis = 0)
+
+        
+        k_dist =sort_neigh_dist[:,2 * df_scaled.shape[1]- 1]
+
+        #kneedle = KneeLocator(x = indices, y = , S = 1.0, curve = "concave", direction = "increasing", online=True)
+        kneedle = KneeLocator(x = range(1, len(neigh_dist)+1), y = k_dist, S = 1, 
+                              curve = "concave", direction = "increasing", online=True)
+
+        if plot:
+             kneedle.plot_knee()
+            # Show the plot
+            #plt.show()
+        
+        return kneedle.all_knees_y
+   
+        
+       
+
+
+
+
